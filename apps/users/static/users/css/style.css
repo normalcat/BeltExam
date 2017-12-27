@@ -1,0 +1,15 @@
+#left{
+    width: 400px;
+    height: 400px;
+    background-color: red;
+    vertical-align: top;
+    display: inline-block;
+}
+
+#right{
+    width: 400px;
+    height: 400px;
+    background-color: green;
+    vertical-align: top;
+    display: inline-block;
+}
