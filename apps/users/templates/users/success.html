@@ -3,13 +3,12 @@
       <title>Hello You are login!!</title>
     </head>
     <body>
-      <a href="/friends">Home</a> <a href="/users/logout">Logout</a>
-  <p>First Name: {{ single_user.first_name }}</p>
-   <p>Last Name: {{ single_user.last_name }}</p>
-   <p>Alias : {{ single_user.alias }}</p>
-   <p>Email: {{ single_user.email }}</p>
-   <p>Birthday: {{single_user.bday }}</p>
-   <p>Poke times: {{single_user.poke_count}}</p>
+      <a href="/dashboard">Home</a> <a href="/users/logout">Logout</a>
+      <p><h2>{{ single_item.item_name }}</h2></p>
+      <p>Users who addes this item in his / her wish list</p>
+      {% for user in wished_by_list %}
+        <p> {{ user.name }} </p>
+      {% endfor %}
    <hr>
 </body>
 </html>
