@@ -1,0 +1,18 @@
+<html>
+    <head>
+      <title>Hello You are login!!</title>
+    </head>
+    <body>
+      <a href="/travels">Home</a> <a href="/users/logout">Logout</a>
+      <p><h2>{{ single_trip.destination }}</h2></p>
+      <p>Planned By: {{ single_trip.created_by.name }}</p>
+      <p>Description: {{ single_trip.description }}</p>
+      <p>Travel Date From: {{ single_trip.travel_from }}</p>
+      <p>Travel Date End: {{ single_trip.travel_end }}</p>
+      <p><h2>Other users' joining the trip:</h2></p>
+      {% for user in joined_by_list %}
+        <p> {{ user.name }} </p>
+      {% endfor %}
+   <hr>
+</body>
+</html>

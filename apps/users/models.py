@@ -25,9 +25,6 @@ class UserManager(models.Manager):
         elif post['password'] != post['cpassword']:
             errors.append("Password does not match\n")
 
-        if  post['date_hired'] > str(date.today()):
-            errors.append("Invalid hired date\n")
-
         if not errors:
             users = User.objects.filter(username=post['username'])
             if users:
@@ -48,61 +45,59 @@ class UserManager(models.Manager):
         X = bcrypt.hashpw(post['password'].encode(),bcrypt.gensalt())
         User.objects.create(name = post['name'],
                             username = post['username'].lower(),
-                            date_hired = post['date_hired'],
                             password = X)
         new_user = User.objects.get(username = post['username'].lower())
         return new_user
 
-class ItemManager(models.Manager):
-    def item_validate(self,post):
+class TripManager(models.Manager):
+    def trip_validate(self,post):
         errors = []
 
-        if len(post['item_name']) < 2:
-            errors.append("Item name should be at least 2 characters\n")
+        if len(post['dest']) < 2:
+            errors.append("Destination name should be at least 2 characters\n")
 
-        if not errors:
-            item = Wishitem.objects.filter(item_name=post['item_name'])
-            if item:
-                errors.append("This item has been created by other users")
+        if len(post['desc']) < 2:
+            errors.append("Please give a short description about this trip\n")
 
-    def item_new(self,post,uid):
+        if  post['travel_from'] < str(date.today()):
+            errors.append("Invalid travel start date\n")
+
+        if post['travel_from'] > post['travel_end']:
+            errors.append("Invalid travel end date\n")
+
+        return errors
+
+    def trip_new(self,post,uid):
         created_user = User.objects.get(id = uid)
-        item = Wishitem.objects.create(item_name = post['item_name'],
-                                created_by = created_user)
-        item.wished_by.add(created_user)
+        trip = Trip.objects.create(destination = post['dest'],
+                                    description = post['desc'],
+                                    travel_from = post['travel_from'],
+                                    travel_end = post['travel_end'],
+                                    created_by = created_user)
+        trip.joined_by.add(created_user)
         return self
 
-    def add_wish(self,iid,uid):
+    def join_trip(self,tid,uid):
         single_user = User.objects.get(id = uid)
-        item = Wishitem.objects.get(id = iid)
-        item.wished_by.add(single_user)
-        return self
-
-    def del_wish(self,iid,uid):
-        single_user = User.objects.get(id = uid)
-        item = Wishitem.objects.get(id = iid)
-        item.wished_by.remove(single_user)
-        return self
-
-    def del_item(self,iid):
-        item = Wishitem.objects.get(id = iid)
-        item.delete()
+        single_trip = Trip.objects.get(id = tid)
+        single_trip.joined_by.add(single_user)
         return self
 
 class User(models.Model):
     name = models.CharField(max_length=255)
     username = models.CharField(max_length=255, default="default")
     password = models.CharField(max_length=255)
-    date_hired = models.DateField(default=0)
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
     objects = UserManager()
 
-class Wishitem(models.Model):
-    item_name = models.CharField(max_length=255)
+class Trip(models.Model):
+    destination = models.CharField(max_length=255)
+    description = models.CharField(max_length=255)
+    travel_from = models.DateField(default=0)
+    travel_end = models.DateField(default=0)
     created_by = models.ForeignKey(User, related_name = "creates")
-    wished_by = models.ManyToManyField(User, related_name = "wishes")
+    joined_by = models.ManyToManyField(User, related_name = "joins")
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
-    objects = ItemManager()
-    
+    objects = TripManager()

@@ -1,0 +1,51 @@
+<html>
+    <head>
+      <title>Hello {{ request.session.id }} You are login!!</title>
+    </head>
+    <body>
+      <a href="/users/logout">Logout</a>
+      <h2>Hello {{request.session.name}}</a></h2>
+      {% if trip_list %}
+      <h2>Your Trip Schedules</h2>
+      <table border = 1>
+          <tr><td>Destination</td>
+                <td>Travel Start Date</td>
+                <td>Travel End Date</td>
+                <td>Plan</td>
+            </tr>
+      {% for trip in trip_list %}
+        <tr>
+            <td><a href="/travels/{{ trip.id }}">{{ trip.destination }}</a></td>
+            <td>{{ trip.travel_from }}</td>
+            <td>{{ trip.travel_end }}</td>
+            <td>{{ trip.description }}</td>
+        </tr>
+    {% endfor %}
+</table>
+    <hr>
+        {% else %}
+        <h2>You do not have a trip schedule</h2>
+        {% endif %}
+
+    <h2>Other User's Travel Plans:</h2>
+    <table border=1>
+            <tr><td>Name</td>
+                  <td>Destination</td>
+                  <td>Travel Start Date</td>
+                  <td>Travel End Date</td>
+                  <td>Do You Want to Join?</td>
+              </tr>
+    {% for trip in all_trips %}
+              <tr>
+                    <td>{{ trip.created_by.name }}</td>
+                    <td><a href="/travels/{{ trip.id }}">{{ trip.destination }}</a></td>
+                    <td>{{ trip.travel_from }}</td>
+                    <td>{{ trip.travel_end }}</td>
+                    <td><a href="/travels/join/{{ trip.id }}">Join</a></td>
+                </tr>
+    {% endfor %}
+</table>
+<br>
+    <a href="/travels/add">Add Travel Plan</a>
+</body>
+</html>

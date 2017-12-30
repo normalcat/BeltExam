@@ -1,0 +1,20 @@
+<html>
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+<p><a href="/travels">Home</a> <a href="/users/logout">Logout</a></p>
+<br>
+<h2>Add a trip</h2>
+<form action='/travels/create' method='POST'>
+    {% csrf_token %}
+    <p>Destination: <input type="text" name="dest"></input></p>
+    <p>Description: <input type="text" name="desc"></input></p>
+    <p>Travel Date From: <input type="date" name="travel_from" value="2017-12-30"></p>
+    <p>Travel Date To: <input type="date" name="travel_end" value="2017-12-30"></p>
+    <p><input type="submit" value="Add this trip"></p>
+</form>
+</html>
